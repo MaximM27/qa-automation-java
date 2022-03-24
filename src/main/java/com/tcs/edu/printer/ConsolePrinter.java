@@ -1,8 +1,7 @@
 package com.tcs.edu.printer;
 
 /**
- * Класс ConsolePrinter необходим для описания методов
- * по выводу в консоли сообщений различного содержания
+ * Класс ConsolePrinter содержит методы для вывода в консоль
  * @author ma.makarov
  */
 public class ConsolePrinter {

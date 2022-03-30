@@ -13,12 +13,12 @@ public class TimestampMessageDecorator {
      * временем и значением счетчика messageCount
      * @param message объект типа String, к которому требуется
      * добавить текущее время
-     * @return объект decoratedMessage типа String, представляющий собой
+     * @return объект decoratedMessage, представляющий собой
      * строку, декорированную текущим счетчиком и временем в формате
      * "YYYY-MM-DD'T'HH:mm:ss.sss'Z'"
      */
     public static String decorate(String message) {
-        String decoratedMessage = messageCount + " " + Instant.now() + " " + message;
+        var decoratedMessage = messageCount + " " + Instant.now() + " " + message;
         return decoratedMessage;
     }
 }

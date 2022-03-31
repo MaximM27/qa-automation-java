@@ -18,7 +18,7 @@ public class TimestampMessageDecorator {
      * "YYYY-MM-DD'T'HH:mm:ss.sss'Z'"
      */
     public static String decorate(String message) {
-        var decoratedMessage = messageCount + " " + Instant.now() + " " + message;
+        final var decoratedMessage = messageCount + " " + Instant.now() + " " + message;
         return decoratedMessage;
     }
 }

@@ -1,5 +1,4 @@
 package com.tcs.edu.printer;
-import static com.tcs.edu.decorator.TimestampMessageDecorator.messageCount;
 /**
  * Класс ConsolePrinter содержит методы для вывода в консоль
  * @author ma.makarov

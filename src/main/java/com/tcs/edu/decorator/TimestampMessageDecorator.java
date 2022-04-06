@@ -7,7 +7,7 @@ import java.time.Instant;
  * @author ma.makarov
  */
 public class TimestampMessageDecorator {
-    public static int messageCount = 1;
+    private static int messageCount;
     /**
      * Метод decorate используется для обогащения строки текущим
      * временем и значением счетчика messageCount
@@ -18,8 +18,8 @@ public class TimestampMessageDecorator {
      * "YYYY-MM-DD'T'HH:mm:ss.sss'Z'"
      */
     public static String decorate(String message) {
-        final var decoratedMessage = messageCount + " " + Instant.now() + " " + message;
         messageCount++;
+        final var decoratedMessage = messageCount + " " + Instant.now() + " " + message;
         return decoratedMessage;
     }
 }

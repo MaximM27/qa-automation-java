@@ -7,6 +7,9 @@ import java.time.Instant;
  * @author ma.makarov
  */
 public class TimestampMessageDecorator {
+
+    final static int PAGE_SIZE = 2;
+
     private static int messageCount;
     /**
      * Метод decorate используется для обогащения строки текущим
@@ -19,8 +22,12 @@ public class TimestampMessageDecorator {
      */
     public static String decorate(String message) {
         messageCount++;
-        //final var decoratedMessage = messageCount + " " + Instant.now() + " " + message;
-        final var decoratedMessage = String.format("%d %s %s", messageCount, Instant.now(), message);
+        String decoratedMessage;
+        if (messageCount % PAGE_SIZE == 0) {
+            decoratedMessage = String.format("%d %s %s \n %s", messageCount, Instant.now(), message, "---");
+        } else  {
+            decoratedMessage = String.format("%d %s %s", messageCount, Instant.now(), message);
+        }
         return decoratedMessage;
     }
 }

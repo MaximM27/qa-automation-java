@@ -8,7 +8,7 @@ import java.time.Instant;
  */
 public class TimestampMessageDecorator {
 
-    final static int PAGE_SIZE = 2;
+    final static int PAGE_SIZE = 1;
 
     private static int messageCount;
     /**
@@ -23,10 +23,9 @@ public class TimestampMessageDecorator {
     public static String decorate(String message) {
         messageCount++;
         String decoratedMessage;
+        decoratedMessage = String.format("%d %s %s", messageCount, Instant.now(), message);
         if (messageCount % PAGE_SIZE == 0) {
-            decoratedMessage = String.format("%d %s %s \n %s", messageCount, Instant.now(), message, "---");
-        } else  {
-            decoratedMessage = String.format("%d %s %s", messageCount, Instant.now(), message);
+            decoratedMessage = String.format("%s \n %s", decoratedMessage, "---");
         }
         return decoratedMessage;
     }

@@ -3,6 +3,7 @@ package com.tcs.edu.decorator;
 import static com.tcs.edu.decorator.SeparateLineMessageDecorator.separateLineDecorate;
 import static com.tcs.edu.decorator.SeverityDecorator.severityDecorate;
 import static com.tcs.edu.decorator.PrefixDecorator.prefixDecorate;
+import static com.tcs.edu.printer.ConsolePrinter.print;
 
 /**
  * Класс messageService используется для получения
@@ -16,14 +17,13 @@ public class MessageService {
      * метод messageResult используется для получения
      * итоговой строки после применения различных аспектов
      * декорирования
-     * @param severity типа Severity, определяющий уровень важности
-     * @param message типа String, который требуется декорировать
-     * @return строку message после применения различных аспектов
-     * декорирования
+     * @param level типа Severity, определяющий уровень важности
+     * @param messages массив объектов типа String, которые требуется декорировать
      */
 
-    public static String messageResult(Severity severity, String message) {
-
-        return prefixDecorate(message) + severityDecorate(severity) + separateLineDecorate();
+    public static void process(Severity level, String ... messages) {
+        for (String message : messages) {
+            print(prefixDecorate(message) + severityDecorate(level) + separateLineDecorate());
+        }
     }
 }

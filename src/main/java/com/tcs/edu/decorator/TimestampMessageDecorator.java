@@ -8,26 +8,21 @@ import java.time.Instant;
  */
 public class TimestampMessageDecorator {
 
-    final static int PAGE_SIZE = 1;
+    final static int PAGE_SIZE = 2;
 
     private static int messageCount;
     /**
-     * Метод decorate используется для обогащения строки текущим
-     * временем и значением счетчика messageCount
+     * Метод timestampMessageDecorate используется для обогащения строки текущим
+     * временем
      * @param message объект типа String, к которому требуется
      * добавить текущее время
      * @return объект decoratedMessage, представляющий собой
-     * строку, декорированную текущим счетчиком и временем в формате
+     * строку, декорированную текущим временем в формате
      * "YYYY-MM-DD'T'HH:mm:ss.sss'Z'"
      */
-    public static String decorate(String message) {
-        messageCount++;
-        String decoratedMessage;
-        decoratedMessage = String.format("%d %s %s", messageCount, Instant.now(), message);
-        if (messageCount % PAGE_SIZE == 0) {
-            decoratedMessage = String.format("%s \n %s", decoratedMessage, "---");
-        }
-        return decoratedMessage;
+    public static String timestampDecorate(String message) {
+
+        return String.format("%s, %s", Instant.now(), message);
     }
 }
 

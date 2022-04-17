@@ -1,6 +1,6 @@
 package com.tcs.edu.decorator;
 
-import static com.tcs.edu.decorator.CounterDecorator.messageCount;
+import static com.tcs.edu.decorator.PrefixDecorator.messageCount;
 
 /**
  * Класс SeparateLineMessageDecorator содержит методы
@@ -15,14 +15,13 @@ public class SeparateLineMessageDecorator {
     /**
      * метод separateLineMessageDecorator испольуется для обогащения
      * строки разделительной линией
-     * @param message объект типа String, к которому требуется добавить
-     * разделитнельную линию
-     * @return строку message, обогащенную разделительной линией
+     * @return строку, обогащенную разделительной линией, при выполнении условия
      */
-    public static String separateLineDecorate (String message) {
+    public static String separateLineDecorate () {
+        String separateLine = "";
         if (messageCount % PAGE_SIZE == 0) {
-            message = String.format("%s \n %s", message, "---");
+            separateLine = " \n ---";
         }
-        return message;
+        return separateLine;
     }
 }

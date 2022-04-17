@@ -3,16 +3,15 @@ import java.time.Instant;
 
 
 /**
- * Класс TimestampMessageDecorator содержит методы для декорирования сообщений
+ * Класс prefixDecorator содержит методы для декорирования сообщений
  * @author ma.makarov
  */
-public class TimestampMessageDecorator {
+public class PrefixDecorator {
 
-    final static int PAGE_SIZE = 2;
 
-    private static int messageCount;
+    public static int messageCount;
     /**
-     * Метод timestampMessageDecorate используется для обогащения строки текущим
+     * Метод prefixDecorate используется для обогащения строки текущим
      * временем
      * @param message объект типа String, к которому требуется
      * добавить текущее время
@@ -20,9 +19,10 @@ public class TimestampMessageDecorator {
      * строку, декорированную текущим временем в формате
      * "YYYY-MM-DD'T'HH:mm:ss.sss'Z'"
      */
-    public static String timestampDecorate(String message) {
+    public static String prefixDecorate(String message) {
+        messageCount++;
 
-        return String.format("%s, %s", Instant.now(), message);
+        return String.format("%d %s %s", messageCount, Instant.now(), message);
     }
 }
 

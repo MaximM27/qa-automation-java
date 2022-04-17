@@ -1,9 +1,8 @@
 package com.tcs.edu.decorator;
 
-import static com.tcs.edu.decorator.CounterDecorator.counterDecorate;
 import static com.tcs.edu.decorator.SeparateLineMessageDecorator.separateLineDecorate;
 import static com.tcs.edu.decorator.SeverityDecorator.severityDecorate;
-import static com.tcs.edu.decorator.TimestampMessageDecorator.timestampDecorate;
+import static com.tcs.edu.decorator.PrefixDecorator.prefixDecorate;
 
 /**
  * Класс messageService используется для получения
@@ -24,11 +23,7 @@ public class MessageService {
      */
 
     public static String messageResult(Severity severity, String message) {
-        message = timestampDecorate(message);
-        message = counterDecorate(message);
-        message = severityDecorate(severity, message);
-        message = separateLineDecorate(message);
 
-        return message;
+        return prefixDecorate(message) + severityDecorate(severity) + separateLineDecorate();
     }
 }

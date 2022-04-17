@@ -208,7 +208,7 @@ Hello World!
 Задачи
 ------
 - [ ] В sourcepath (src/main/java) cоздайте пакет com.tcs.edu.decorator
-- [ ] Создайте класс com.tcs.edu.decorator.TimestampMessageDecorator
+- [ ] Создайте класс com.tcs.edu.decorator.PrefixDecorator
 - [ ] Создайте статический метод decorate(String message), возвращающий String – обогащенную строку сообщения
 - [ ] В методе возвращайте склееную строку, состоящую из результата функции Instant.now() и входного параметра метода – строки сообщения
 - [ ] Импортируйте полное имя класса java.time.Instant 
@@ -245,7 +245,7 @@ Hello World!
 
 Задачи
 ------
-- [ ] В sourcepath (src/main/java) откройте метод decorate() класса com.tcs.edu.decorator.TimestampMessageDecorator
+- [ ] В sourcepath (src/main/java) откройте метод decorate() класса com.tcs.edu.decorator.PrefixDecorator
 - [ ] Результат выражения склейки текущего времени и сообщения сохраняйте в переменную decoratedMessage типа String
 - [ ] Возвращайте из метода значение этой переменной
 
@@ -278,7 +278,7 @@ Hello World!
 
 Задачи
 ------
-- [ ] В sourcepath (src/main/java) откройте класс com.tcs.edu.decorator.TimestampMessageDecorator
+- [ ] В sourcepath (src/main/java) откройте класс com.tcs.edu.decorator.PrefixDecorator
 - [ ] Добавьте глобальную (static) переменную messageCount
 - [ ] В методе вывода увеличивайте этот счетчик (оператор '++')
 - [ ] При формировании итоговой строки обогащенного сообщения вначале добавляйте значение этого счетчика
@@ -318,7 +318,7 @@ Hello World!
 
 Задачи
 ------
-- [ ] В sourcepath (src/main/java) откройте метод decorate() класс com.tcs.edu.decorator.TimestampMessageDecorator
+- [ ] В sourcepath (src/main/java) откройте метод decorate() класс com.tcs.edu.decorator.PrefixDecorator
 - [ ] Измените объявление поясняющей переменной decoratedMessage: вместо явного объявления типа переменной используйте var
 
 Как проверить
@@ -347,7 +347,7 @@ Hello World!
 
 Задачи
 ------
-- [ ] В sourcepath (src/main/java) откройте метод decorate() класс com.tcs.edu.decorator.TimestampMessageDecorator
+- [ ] В sourcepath (src/main/java) откройте метод decorate() класс com.tcs.edu.decorator.PrefixDecorator
 - [ ] Измените объявление поясняющей переменной decoratedMessage: добавьте модификатор final
 
 Как проверить

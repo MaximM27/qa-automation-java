@@ -11,12 +11,10 @@ public class SeverityDecorator {
     /**
      * метод severityDecoratedMessage используется для обогащения строки
      * уровнем важности
-     * @param message объект типа String, который требуется декорировать
-     * уровнем важности
      * @return объект severityDecoratedMessage, представляющий собой
      * строку, декорированную уровнем важности
      */
-    public static String severityDecorate(Severity severity, String message) {
+    public static String severityDecorate(Severity severity) {
 
         String severityString = null;
 
@@ -34,6 +32,6 @@ public class SeverityDecorator {
                 break;
             }
         }
-        return String.format("%s %s", message, severityString);
+        return severityString;
     }
 }

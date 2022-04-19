@@ -2,7 +2,7 @@ package com.tcs.edu.decorator;
 import java.time.Instant;
 
 /**
- * Класс PrefixDecorator содержит методы для декорирования префикса
+ * Класс содержит методы для декорирования префикса
  * сообщений
  * @author ma.makarov
  */

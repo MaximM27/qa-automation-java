@@ -9,16 +9,17 @@ package com.tcs.edu.decorator;
 public class SeverityDecorator {
 
     /**
-     * метод severityDecoratedMessage используется для обогащения строки
-     * уровнем важности
-     * @return объект severityDecoratedMessage, представляющий собой
-     * строку, декорированную уровнем важности
+     * метод severityDecoratedMessage используется для возвращения строки
+     * в зависимости от уровня важности
+     * @param level enum класса Severity, представляющий собой уровень
+     * важности
+     * @return строку, значение которой зависит от уровня важности
      */
-    public static String severityDecorate(Severity severity) {
+    public static String getMessageBySeverity(Severity level) {
 
         String severityString = null;
 
-        switch (severity) {
+        switch (level) {
             case MINOR : {
                 severityString = "()";
                 break;

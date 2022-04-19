@@ -1,12 +1,12 @@
 package com.tcs.edu.decorator;
 
-import static com.tcs.edu.decorator.SeparateLineMessageDecorator.separateLineDecorate;
-import static com.tcs.edu.decorator.SeverityDecorator.severityDecorate;
+import static com.tcs.edu.decorator.SeparateMessageDecorator.separatePage;
+import static com.tcs.edu.decorator.SeverityDecorator.getMessageBySeverity;
 import static com.tcs.edu.decorator.PrefixDecorator.prefixDecorate;
 import static com.tcs.edu.printer.ConsolePrinter.print;
 
 /**
- * Класс messageService используется для получения
+ * Класс MessageService используется для получения
  * итоговой строки путем применения разных аспектов
  * декорирования
  * @author ma.makarov
@@ -14,7 +14,7 @@ import static com.tcs.edu.printer.ConsolePrinter.print;
 public class MessageService {
 
     /**
-     * метод messageResult используется для получения
+     * метод process используется для получения
      * итоговой строки после применения различных аспектов
      * декорирования
      * @param level типа Severity, определяющий уровень важности
@@ -23,7 +23,7 @@ public class MessageService {
 
     public static void process(Severity level, String ... messages) {
         for (String message : messages) {
-            print(prefixDecorate(message) + severityDecorate(level) + separateLineDecorate());
+            print(prefixDecorate(message) + getMessageBySeverity(level) + separatePage());
         }
     }
 }

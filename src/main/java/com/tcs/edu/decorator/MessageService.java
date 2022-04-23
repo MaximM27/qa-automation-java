@@ -22,11 +22,8 @@ public class MessageService {
      */
 
     public static String process(Severity level, String message) {
-        String decoratedMessage = "";
-        if (message != null) {
-           decoratedMessage = prefixDecorate(message) + getMessageBySeverity(level) + separatePage(messageCount);
-        }
-        return decoratedMessage;
+
+        return prefixDecorate(message) + getMessageBySeverity(level) + separatePage(messageCount);
     }
 
     /**
@@ -38,8 +35,10 @@ public class MessageService {
 
     public static void print(Severity level, String message, String ... messages) {
         ConsolePrinter.print(process(level, message));
-       for (String current: messages) {
-            ConsolePrinter.print(process(level, current));
+        for (String current: messages) {
+            if (current != null) {
+                ConsolePrinter.print(process(level, current));
+            }
         }
     }
 }

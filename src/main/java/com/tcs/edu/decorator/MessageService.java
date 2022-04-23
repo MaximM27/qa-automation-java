@@ -22,8 +22,11 @@ public class MessageService {
      */
 
     public static String process(Severity level, String message) {
-
-        return prefixDecorate(message) + getMessageBySeverity(level) + separatePage(messageCount);
+        String decoratedMessage = "";
+        if (message != null) {
+           decoratedMessage = prefixDecorate(message) + getMessageBySeverity(level) + separatePage(messageCount);
+        }
+        return decoratedMessage;
     }
 
     /**

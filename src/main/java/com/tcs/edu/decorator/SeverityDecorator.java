@@ -5,7 +5,6 @@ package com.tcs.edu.decorator;
  * уровнем важности
  * @author ma.makarov
  */
-
 public class SeverityDecorator {
 
     /**

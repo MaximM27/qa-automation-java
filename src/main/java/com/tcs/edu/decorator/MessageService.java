@@ -12,6 +12,7 @@ import static com.tcs.edu.decorator.PrefixDecorator.prefixDecorate;
 /**
  * Класс содержит методы для получения итоговой строки
  * путем применения разных аспектов декорирования
+ *
  * @author ma.makarov
  */
 public class MessageService {
@@ -19,41 +20,79 @@ public class MessageService {
      * метод process используется для получения
      * итоговой строки после применения различных аспектов
      * декорирования
-     * @param level типа Severity, определяющий уровень важности
+     *
+     * @param level   типа Severity, определяющий уровень важности
      * @param message объект типа String, который требуется декорировать
      */
-
     public static String process(Severity level, String message) {
 
         return prefixDecorate(message) + getMessageBySeverity(level) + separatePage(messageCount);
     }
 
     /**
-     * метод используется для вывода
-     * @param level типа Severity, определяющий уровень важности
-     * @param message объект типа String, который требуется декорировать
+     * метод используется для вывода в консоль декорированных сообщений
+     * @param level    типа Severity, определяющий уровень важности
+     * @param message  объект типа String, который требуется декорировать
      * @param messages массив объектов типа String, которые требуется декорировать
      */
-
-    public static void print(Severity level, String message, String ... messages) {
-        ConsolePrinter.print(process(level, message));
-        for (String current: messages) {
-            if (current != null) {
-                ConsolePrinter.print(process(level, current));
+    public static void print(Severity level, String message, String... messages) {
+        if (level == null) level = Severity.MINOR;
+        if (message != null) {
+            ConsolePrinter.print(process(level, message));
+        }
+        for (String currentMessage : messages) {
+            if (currentMessage != null) {
+                ConsolePrinter.print(process(level, currentMessage));
             }
         }
     }
 
     /**
-     * метод используется для вывода
-     * @param level типа Severity, определяющий уровень важности
-     * @param order типа MessageOrder, определяющий порядок сортировки
+     * метод используется для вывода в консоль сортированных декорированных сообщений
+     * @param level    типа Severity, определяющий уровень важности
+     * @param message  объект типа String, который требуется декорировать
+     * @param messages массив объектов типа String, которые требуется декорировать
+     */
+    public static void print(Severity level, MessageOrder order, String message, String... messages) {
+        if (level == null) level = Severity.MINOR;
+        if (message != null) {
+            ConsolePrinter.print(process(level, message));
+        }
+        switch (order) {
+            case ASC: {
+                for (String current: messages) {
+                    if (current != null) {
+                        ConsolePrinter.print(process(level, current));
+                    }
+                }
+                break;
+            }
+            case DESC: {
+                for (int counter = messages.length - 1; counter > 0; counter--) {
+                    if (messages[counter] != null) {
+                        ConsolePrinter.print(process(level, messages[counter]));
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+
+    /**
+     * метод используется для вывода сортированных сообщений, обогащен
+     * проверкой на дублирование сообщений
+     * @param level    типа Severity, определяющий уровень важности
+     * @param order    типа MessageOrder, определяющий порядок сортировки
      * @param doubling типа Doubling, определяющий характер дублирования сообщений
-     * @param message message объект типа String, который требуется декорировать
+     * @param message  message объект типа String, который требуется декорировать
      * @param messages messages массив объектов типа String, которые требуется декорировать
      */
-    public static void print (Severity level, MessageOrder order, Doubling doubling, String message, String ... messages) {
-        ConsolePrinter.print(process(level, message));
+    public static void print(Severity level, MessageOrder order, Doubling doubling, String message, String... messages) {
+        if (level == null) level = Severity.MINOR;
+        if (message != null) {
+            ConsolePrinter.print(process(level, message));
+        }
         switch (doubling) {
             case DOUBLES: {
                 switch (order) {
@@ -77,15 +116,14 @@ public class MessageService {
                 break;
             }
             case DISTINCT: {
-                String[] array = new String[messages.length];
+                String[] printedMessages = new String[messages.length];
                 switch (order) {
                     case ASC: {
                         for (int counter = 0; counter < messages.length; counter++) {
                             if (messages[counter] != null) {
-                                int matchCounter = getMatchCounter(array, messages, counter);
-                                if (matchCounter == 0) {
+                                if (!isDuplicate(messages[counter], printedMessages)) {
                                     ConsolePrinter.print(process(level, messages[counter]));
-                                    array[counter] = messages[counter];
+                                    printedMessages[counter] = messages[counter];
                                 }
                             }
                         }
@@ -94,10 +132,9 @@ public class MessageService {
                     case DESC: {
                         for (int counter = messages.length - 1; counter >= 0; counter--) {
                             if (messages[counter] != null) {
-                                int matchCounter = getMatchCounter(array, messages, counter);
-                                if (matchCounter == 0) {
+                                if (!isDuplicate(messages[counter], printedMessages)) {
                                     ConsolePrinter.print(process(level, messages[counter]));
-                                    array[counter] = messages[counter];
+                                    printedMessages[counter] = messages[counter];
                                 }
                             }
                         }
@@ -109,13 +146,19 @@ public class MessageService {
         }
     }
 
-    private static int getMatchCounter(String[] array, String[] messages, int counter) {
-        int matchCounter = 0;
-        for (int arrayCounter = 0; arrayCounter < array.length; arrayCounter++) {
-            if (Objects.equals(array[arrayCounter], messages[counter])) {
-                matchCounter++;
+    /**
+     * метод используется для сравнения имеющейся строки
+     * с элементами массива строк
+     * @param message типа String, который требуется сравнивать с элементами массива
+     * @param messages массив элементов типа String, с которыми сравнивается message
+     * @return true, если совпадения есть, или false, - если совпадений нет
+     */
+    private static boolean isDuplicate(String message, String[] messages) {
+        for (String currentMessage : messages) {
+            if (Objects.equals(message, currentMessage)) {
+                return true;
             }
         }
-        return matchCounter;
+        return false;
     }
 }

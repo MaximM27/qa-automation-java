@@ -13,14 +13,14 @@ import java.util.Objects;
  * @author ma.makarov
  */
 public class OrderedDistinctMessageService implements com.tinkoff.edu.MessageService {
+    private Printer printer = new ConsolePrinter();
+    private MessageDecorator decorator = new Decorator();
     /**
      * метод используется для вывода в консоль декорированных сообщений
      * @param message  объект типа Message, который требуется декорировать
      * @param messages массив объектов типа Message, которые требуется декорировать
      */
     public void log(Message message, Message... messages) {
-        Printer printer = new ConsolePrinter();
-        final MessageDecorator decorator = new Decorator();
         if (message.getBody() != null) {
             printer.print(decorator.decorate(message));
         }
@@ -37,8 +37,6 @@ public class OrderedDistinctMessageService implements com.tinkoff.edu.MessageSer
      * @param messages массив объектов типа Message, которые требуется декорировать
      */
     public void log(MessageOrder order, Message message, Message... messages) {
-        Printer printer = new ConsolePrinter();
-        final MessageDecorator decorator = new Decorator();
         if (message.getBody() != null) {
             printer.print(decorator.decorate(message));
         }
@@ -71,8 +69,6 @@ public class OrderedDistinctMessageService implements com.tinkoff.edu.MessageSer
      * @param messages массив объектов типа Message, которые требуется вывести
      */
     public void log(MessageOrder order, Doubling doubling, Message message, Message... messages) {
-        Printer printer = new ConsolePrinter();
-        final MessageDecorator decorator = new Decorator();
         if (message.getBody() != null) {
             printer.print(decorator.decorate(message));
         }

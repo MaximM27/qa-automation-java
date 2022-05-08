@@ -13,8 +13,19 @@ import java.util.Objects;
  * @author ma.makarov
  */
 public class OrderedDistinctMessageService implements com.tinkoff.edu.MessageService {
-    private Printer printer = new ConsolePrinter();
-    private MessageDecorator decorator = new Decorator();
+    private Printer printer;
+    private MessageDecorator decorator;
+
+    /**
+     * Конструктор для создания объектов класса OrderedDistinctMessageService
+     * @param decorator объект класса Decorator
+     * @param printer объект класса ConsolePrinter
+     */
+    public OrderedDistinctMessageService(Decorator decorator, ConsolePrinter printer) {
+        this.decorator = decorator;
+        this.printer = printer;
+    }
+
     /**
      * метод используется для вывода в консоль декорированных сообщений
      * @param message  объект типа Message, который требуется декорировать

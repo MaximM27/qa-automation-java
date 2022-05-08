@@ -1,44 +1,32 @@
 package com.tinkoff.edu.decorator;
 
+import com.tinkoff.edu.MessageDecorator;
+import com.tinkoff.edu.Printer;
 import com.tinkoff.edu.domain.Message;
 import com.tinkoff.edu.printer.ConsolePrinter;
 
 import java.util.Objects;
-
-import static com.tinkoff.edu.decorator.PrefixDecorator.messageCount;
-import static com.tinkoff.edu.decorator.SeparateMessageDecorator.separatePage;
-import static com.tinkoff.edu.decorator.SeverityDecorator.getMessageBySeverity;
-import static com.tinkoff.edu.decorator.PrefixDecorator.prefixDecorate;
 
 /**
  * Класс содержит методы для получения итоговой строки
  * путем применения разных аспектов декорирования
  * @author ma.makarov
  */
-public class MessageService {
-    /**
-     * метод process используется для получения
-     * итоговой строки после применения различных аспектов
-     * декорирования
-     * @param message объект типа Message, который требуется декорировать
-     */
-    public static String process(Message message) {
-
-        return prefixDecorate(message.getBody()) + getMessageBySeverity(message.getLevel()) + separatePage(messageCount);
-    }
-
+public class OrderedDistinctMessageService implements com.tinkoff.edu.MessageService {
     /**
      * метод используется для вывода в консоль декорированных сообщений
      * @param message  объект типа Message, который требуется декорировать
      * @param messages массив объектов типа Message, которые требуется декорировать
      */
-    public static void log(Message message, Message... messages) {
+    public void log(Message message, Message... messages) {
+        Printer printer = new ConsolePrinter();
+        final MessageDecorator decorator = new Decorator();
         if (message.getBody() != null) {
-            ConsolePrinter.print(process(message));
+            printer.print(decorator.decorate(message));
         }
         for (Message currentMessage : messages) {
             if (currentMessage.getBody() != null) {
-                ConsolePrinter.print(process(currentMessage));
+                printer.print(decorator.decorate(currentMessage));
             }
         }
     }
@@ -48,15 +36,17 @@ public class MessageService {
      * @param message  объект типа Message, который требуется декорировать
      * @param messages массив объектов типа Message, которые требуется декорировать
      */
-    public static void log(MessageOrder order, Message message, Message... messages) {
+    public void log(MessageOrder order, Message message, Message... messages) {
+        Printer printer = new ConsolePrinter();
+        final MessageDecorator decorator = new Decorator();
         if (message.getBody() != null) {
-            ConsolePrinter.print(process(message));
+            printer.print(decorator.decorate(message));
         }
         switch (order) {
             case ASC: {
                 for (Message current: messages) {
                     if (current != null) {
-                        ConsolePrinter.print(process(current));
+                        printer.print(decorator.decorate(current));
                     }
                 }
                 break;
@@ -64,14 +54,13 @@ public class MessageService {
             case DESC: {
                 for (int counter = messages.length - 1; counter > 0; counter--) {
                     if (messages[counter].getBody() != null) {
-                        ConsolePrinter.print(process(messages[counter]));
+                        printer.print(decorator.decorate(messages[counter]));
                     }
                 }
                 break;
             }
         }
     }
-
 
     /**
      * метод используется для вывода сортированных сообщений, обогащен
@@ -81,9 +70,11 @@ public class MessageService {
      * @param message  объект типа Message, который требуется вывести
      * @param messages массив объектов типа Message, которые требуется вывести
      */
-    public static void log(MessageOrder order, Doubling doubling, Message message, Message... messages) {
+    public void log(MessageOrder order, Doubling doubling, Message message, Message... messages) {
+        Printer printer = new ConsolePrinter();
+        final MessageDecorator decorator = new Decorator();
         if (message.getBody() != null) {
-            ConsolePrinter.print(process(message));
+            printer.print(decorator.decorate(message));
         }
         switch (doubling) {
             case DOUBLES: {
@@ -91,7 +82,7 @@ public class MessageService {
                     case ASC: {
                         for (Message current : messages) {
                             if (current.getBody() != null) {
-                                ConsolePrinter.print(process(current));
+                                printer.print(decorator.decorate(current));
                             }
                         }
                         break;
@@ -99,7 +90,7 @@ public class MessageService {
                     case DESC: {
                         for (int counter = messages.length - 1; counter >= 0; counter--) {
                             if (messages[counter].getBody() != null) {
-                                ConsolePrinter.print(process(messages[counter]));
+                                printer.print(decorator.decorate(messages[counter]));
                             }
                         }
                         break;
@@ -114,7 +105,7 @@ public class MessageService {
                         for (int counter = 0; counter < messages.length; counter++) {
                             if (messages[counter].getBody() != null) {
                                 if (!isDuplicate(messages[counter].getBody(), printedMessages)) {
-                                    ConsolePrinter.print(process(messages[counter]));
+                                    printer.print(decorator.decorate(messages[counter]));
                                     printedMessages[counter] = messages[counter].getBody();
                                 }
                             }
@@ -125,7 +116,7 @@ public class MessageService {
                         for (int counter = messages.length - 1; counter >= 0; counter--) {
                             if (messages[counter] != null) {
                                 if (!isDuplicate(messages[counter].getBody(), printedMessages)) {
-                                    ConsolePrinter.print(process(messages[counter]));
+                                    printer.print(decorator.decorate(messages[counter]));
                                     printedMessages[counter] = messages[counter].getBody();
                                 }
                             }

@@ -1,4 +1,4 @@
-package com.tcs.edu.decorator;
+package com.tinkoff.edu.decorator;
 
 /**
  * Класс содержит методы для декорирования сообщений
@@ -14,7 +14,7 @@ public class SeverityDecorator {
      * важности
      * @return строку, значение которой зависит от уровня важности
      */
-    public static String getMessageBySeverity(Severity level) {
+    public static String getMessageBySeverity(SeverityLevel level) {
 
         String severityString = null;
 

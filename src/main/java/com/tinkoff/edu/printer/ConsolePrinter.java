@@ -1,4 +1,4 @@
-package com.tcs.edu.printer;
+package com.tinkoff.edu.printer;
 /**
  * Класс ConsolePrinter содержит методы для вывода в консоль
  * @author ma.makarov

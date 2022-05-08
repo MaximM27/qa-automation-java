@@ -1,4 +1,4 @@
-package com.tcs.edu.decorator;
+package com.tinkoff.edu.decorator;
 
 /**
  * Класс содержит методы для оформления сообщений

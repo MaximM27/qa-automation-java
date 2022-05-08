@@ -1,4 +1,4 @@
-package com.tcs.edu.decorator;
+package com.tinkoff.edu.decorator;
 
 public enum MessageOrder {
     ASC, DESC

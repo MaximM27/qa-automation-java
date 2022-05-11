@@ -80,32 +80,15 @@ public class OrderedDistinctMessageService implements com.tinkoff.edu.MessageSer
      * @param messages массив объектов типа Message, которые требуется вывести
      */
     public void log(MessageOrder order, Doubling doubling, Message message, Message... messages) {
-        if (message.getBody() != null) {
-            printer.print(decorator.decorate(message));
-        }
         switch (doubling) {
             case DOUBLES: {
-                switch (order) {
-                    case ASC: {
-                        for (Message current : messages) {
-                            if (current.getBody() != null) {
-                                printer.print(decorator.decorate(current));
-                            }
-                        }
-                        break;
-                    }
-                    case DESC: {
-                        for (int counter = messages.length - 1; counter >= 0; counter--) {
-                            if (messages[counter].getBody() != null) {
-                                printer.print(decorator.decorate(messages[counter]));
-                            }
-                        }
-                        break;
-                    }
-                }
+                log(order, message, messages);
                 break;
             }
             case DISTINCT: {
+                if (message.getBody() != null) {
+                    printer.print(decorator.decorate(message));
+                }
                 String[] printedMessages = new String[messages.length];
                 switch (order) {
                     case ASC: {

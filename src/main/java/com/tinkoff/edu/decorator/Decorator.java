@@ -14,7 +14,7 @@ import static com.tinkoff.edu.decorator.SeverityDecorator.getMessageBySeverity;
  */
 public class Decorator implements MessageDecorator {
     /**
-     * метод process используется для получения
+     * метод decorate используется для получения
      * итоговой строки после применения различных аспектов
      * декорирования
      * @param message объект типа Message, который требуется декорировать

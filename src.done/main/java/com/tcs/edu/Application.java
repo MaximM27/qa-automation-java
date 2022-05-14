@@ -1,7 +1,7 @@
-package com.tcs.edu;
+package com.tinkoff.edu;
 
-import com.tcs.edu.decorator.TimestampMessageDecorator;
-import com.tcs.edu.printer.ConsolePrinter;
+import com.tinkoff.edu.decorator.TimestampMessageDecorator;
+import com.tinkoff.edu.printer.ConsolePrinter;
 
 /**
  * Main class: entry point

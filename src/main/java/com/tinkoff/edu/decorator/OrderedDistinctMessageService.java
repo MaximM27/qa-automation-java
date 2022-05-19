@@ -12,7 +12,7 @@ import java.util.Objects;
  * путем применения разных аспектов декорирования
  * @author ma.makarov
  */
-public class OrderedDistinctMessageService implements com.tinkoff.edu.MessageService {
+public class OrderedDistinctMessageService extends ValidatedService implements com.tinkoff.edu.MessageService {
     private Printer printer;
     private MessageDecorator decorator;
 
@@ -32,11 +32,11 @@ public class OrderedDistinctMessageService implements com.tinkoff.edu.MessageSer
      * @param messages массив объектов типа Message, которые требуется декорировать
      */
     public void log(Message message, Message... messages) {
-        if (message.getBody() != null) {
+        if (super.isArgsValid(message)) {
             printer.print(decorator.decorate(message));
         }
         for (Message currentMessage : messages) {
-            if (currentMessage.getBody() != null) {
+            if (super.isArgsValid(currentMessage)) {
                 printer.print(decorator.decorate(currentMessage));
             }
         }
@@ -48,21 +48,21 @@ public class OrderedDistinctMessageService implements com.tinkoff.edu.MessageSer
      * @param messages массив объектов типа Message, которые требуется декорировать
      */
     public void log(MessageOrder order, Message message, Message... messages) {
-        if (message.getBody() != null) {
+        if (super.isArgsValid(message)) {
             printer.print(decorator.decorate(message));
         }
         switch (order) {
             case ASC: {
                 for (Message current: messages) {
-                    if (current != null) {
+                    if (super.isArgsValid(current)) {
                         printer.print(decorator.decorate(current));
                     }
                 }
                 break;
             }
             case DESC: {
-                for (int counter = messages.length - 1; counter > 0; counter--) {
-                    if (messages[counter].getBody() != null) {
+                for (int counter = messages.length - 1; counter >= 0; counter--) {
+                    if (super.isArgsValid(messages[counter])) {
                         printer.print(decorator.decorate(messages[counter]));
                     }
                 }
@@ -86,14 +86,14 @@ public class OrderedDistinctMessageService implements com.tinkoff.edu.MessageSer
                 break;
             }
             case DISTINCT: {
-                if (message.getBody() != null) {
+                if (super.isArgsValid(message)) {
                     printer.print(decorator.decorate(message));
                 }
                 String[] printedMessages = new String[messages.length];
                 switch (order) {
                     case ASC: {
                         for (int counter = 0; counter < messages.length; counter++) {
-                            if (messages[counter].getBody() != null) {
+                            if (super.isArgsValid(messages[counter])) {
                                 if (!isDuplicate(messages[counter].getBody(), printedMessages)) {
                                     printer.print(decorator.decorate(messages[counter]));
                                     printedMessages[counter] = messages[counter].getBody();
@@ -104,7 +104,7 @@ public class OrderedDistinctMessageService implements com.tinkoff.edu.MessageSer
                     }
                     case DESC: {
                         for (int counter = messages.length - 1; counter >= 0; counter--) {
-                            if (messages[counter] != null) {
+                            if (super.isArgsValid(messages[counter])) {
                                 if (!isDuplicate(messages[counter].getBody(), printedMessages)) {
                                     printer.print(decorator.decorate(messages[counter]));
                                     printedMessages[counter] = messages[counter].getBody();

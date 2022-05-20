@@ -13,8 +13,8 @@ public abstract class ValidatedService {
      * @return true или false
      */
     public boolean isArgsValid(Message message){
-        if (message.getBody() == null) return false;
-        if (message.getBody().isEmpty()) return false;
+        if (message.getBody() == null) throw new IllegalArgumentException("message is null");
+        if (message.getBody().isEmpty()) throw new IllegalArgumentException("message is empty");
 
         return true;
     }

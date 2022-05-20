@@ -32,13 +32,20 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
      * @param messages массив объектов типа Message, которые требуется декорировать
      */
     public void log(Message message, Message... messages) {
-        if (super.isArgsValid(message)) {
-            printer.print(decorator.decorate(message));
+        try {
+            super.isArgsValid(message);
+        } catch (IllegalArgumentException e){
+            throw new LogException("invalid argument message", e);
         }
+        printer.print(decorator.decorate(message));
+
         for (Message currentMessage : messages) {
-            if (super.isArgsValid(currentMessage)) {
-                printer.print(decorator.decorate(currentMessage));
+            try {
+                super.isArgsValid(currentMessage);
+            } catch (IllegalArgumentException e){
+                throw new LogException("invalid argument message", e);
             }
+            printer.print(decorator.decorate(currentMessage));
         }
     }
 
@@ -48,23 +55,33 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
      * @param messages массив объектов типа Message, которые требуется декорировать
      */
     public void log(MessageOrder order, Message message, Message... messages) {
-        if (super.isArgsValid(message)) {
-            printer.print(decorator.decorate(message));
+        try {
+            super.isArgsValid(message);
+        } catch (IllegalArgumentException e){
+            throw new LogException("invalid argument message", e);
         }
+        printer.print(decorator.decorate(message));
+
         switch (order) {
             case ASC: {
                 for (Message current: messages) {
-                    if (super.isArgsValid(current)) {
-                        printer.print(decorator.decorate(current));
+                    try {
+                        super.isArgsValid(current);
+                    } catch (IllegalArgumentException e){
+                        throw new LogException("invalid argument message", e);
                     }
+                    printer.print(decorator.decorate(current));
                 }
                 break;
             }
             case DESC: {
                 for (int counter = messages.length - 1; counter >= 0; counter--) {
-                    if (super.isArgsValid(messages[counter])) {
-                        printer.print(decorator.decorate(messages[counter]));
+                    try {
+                        super.isArgsValid(messages[counter]);
+                    } catch (IllegalArgumentException e){
+                        throw new LogException("invalid argument message", e);
                     }
+                    printer.print(decorator.decorate(messages[counter]));
                 }
                 break;
             }
@@ -86,30 +103,42 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
                 break;
             }
             case DISTINCT: {
-                if (super.isArgsValid(message)) {
-                    printer.print(decorator.decorate(message));
+                try {
+                    super.isArgsValid(message);
+                } catch (IllegalArgumentException e){
+                    throw new LogException("invalid argument message", e);
                 }
+                printer.print(decorator.decorate(message));
+
                 String[] printedMessages = new String[messages.length];
                 switch (order) {
                     case ASC: {
                         for (int counter = 0; counter < messages.length; counter++) {
-                            if (super.isArgsValid(messages[counter])) {
-                                if (!isDuplicate(messages[counter].getBody(), printedMessages)) {
-                                    printer.print(decorator.decorate(messages[counter]));
-                                    printedMessages[counter] = messages[counter].getBody();
-                                }
+                            try {
+                                super.isArgsValid(messages[counter]);
+                            } catch (IllegalArgumentException e){
+                                throw new LogException("invalid argument message", e);
+                            }
+                            if (!isDuplicate(messages[counter].getBody(), printedMessages)) {
+                                printer.print(decorator.decorate(messages[counter]));
+                                printedMessages[counter] = messages[counter].getBody();
+
                             }
                         }
                         break;
                     }
                     case DESC: {
                         for (int counter = messages.length - 1; counter >= 0; counter--) {
-                            if (super.isArgsValid(messages[counter])) {
-                                if (!isDuplicate(messages[counter].getBody(), printedMessages)) {
-                                    printer.print(decorator.decorate(messages[counter]));
-                                    printedMessages[counter] = messages[counter].getBody();
-                                }
+                            try {
+                                super.isArgsValid(messages[counter]);
+                            } catch (IllegalArgumentException e){
+                                throw new LogException("invalid argument message", e);
                             }
+                            if (!isDuplicate(messages[counter].getBody(), printedMessages)) {
+                                printer.print(decorator.decorate(messages[counter]));
+                                printedMessages[counter] = messages[counter].getBody();
+                            }
+
                         }
                         break;
                     }

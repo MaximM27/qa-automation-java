@@ -4,6 +4,8 @@ import com.tinkoff.edu.MessageDecorator;
 import com.tinkoff.edu.Printer;
 import com.tinkoff.edu.domain.Message;
 import com.tinkoff.edu.printer.ConsolePrinter;
+import com.tinkoff.edu.repository.HashMapMessageRepository;
+import com.tinkoff.edu.repository.MessageRepository;
 
 import java.util.Objects;
 
@@ -15,6 +17,7 @@ import java.util.Objects;
 public class OrderedDistinctMessageService extends ValidatedService implements com.tinkoff.edu.MessageService {
     private Printer printer;
     private MessageDecorator decorator;
+    private MessageRepository messageRepository = new HashMapMessageRepository();
 
     /**
      * Конструктор для создания объектов класса OrderedDistinctMessageService
@@ -37,7 +40,7 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
         } catch (IllegalArgumentException e){
             throw new LogException("invalid argument message", e);
         }
-        printer.print(decorator.decorate(message));
+        messageRepository.create(message);
 
         for (Message currentMessage : messages) {
             try {
@@ -45,7 +48,7 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
             } catch (IllegalArgumentException e){
                 throw new LogException("invalid argument message", e);
             }
-            printer.print(decorator.decorate(currentMessage));
+            messageRepository.create(currentMessage);
         }
     }
 
@@ -60,8 +63,7 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
         } catch (IllegalArgumentException e){
             throw new LogException("invalid argument message", e);
         }
-        printer.print(decorator.decorate(message));
-
+        messageRepository.create(message);
         switch (order) {
             case ASC: {
                 for (Message current: messages) {
@@ -70,7 +72,7 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
                     } catch (IllegalArgumentException e){
                         throw new LogException("invalid argument message", e);
                     }
-                    printer.print(decorator.decorate(current));
+                    messageRepository.create(current);
                 }
                 break;
             }
@@ -81,7 +83,7 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
                     } catch (IllegalArgumentException e){
                         throw new LogException("invalid argument message", e);
                     }
-                    printer.print(decorator.decorate(messages[counter]));
+                    messageRepository.create(messages[counter]);
                 }
                 break;
             }
@@ -108,7 +110,7 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
                 } catch (IllegalArgumentException e){
                     throw new LogException("invalid argument message", e);
                 }
-                printer.print(decorator.decorate(message));
+                messageRepository.create(message);
 
                 String[] printedMessages = new String[messages.length];
                 switch (order) {
@@ -120,7 +122,7 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
                                 throw new LogException("invalid argument message", e);
                             }
                             if (!isDuplicate(messages[counter].getBody(), printedMessages)) {
-                                printer.print(decorator.decorate(messages[counter]));
+                                messageRepository.create(messages[counter]);
                                 printedMessages[counter] = messages[counter].getBody();
 
                             }
@@ -135,7 +137,7 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
                                 throw new LogException("invalid argument message", e);
                             }
                             if (!isDuplicate(messages[counter].getBody(), printedMessages)) {
-                                printer.print(decorator.decorate(messages[counter]));
+                                messageRepository.create(messages[counter]);
                                 printedMessages[counter] = messages[counter].getBody();
                             }
 

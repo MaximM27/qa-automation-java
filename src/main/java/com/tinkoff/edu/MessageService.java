@@ -2,6 +2,7 @@ package com.tinkoff.edu;
 
 import com.tinkoff.edu.decorator.Doubling;
 import com.tinkoff.edu.decorator.MessageOrder;
+import com.tinkoff.edu.decorator.SeverityLevel;
 import com.tinkoff.edu.domain.Message;
 
 import java.util.Collection;
@@ -14,4 +15,5 @@ public interface MessageService {
     void log(MessageOrder order, Doubling doubling, Message message, Message... messages);
     Message findByPrimaryKey(UUID key);
     Collection<Message> findAll();
+    Collection<Message> findBySeverity(SeverityLevel by);
 }

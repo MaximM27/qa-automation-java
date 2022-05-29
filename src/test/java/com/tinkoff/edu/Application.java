@@ -20,8 +20,14 @@ class Application {
         for (Message current: allMessages) {
             System.out.println(current);
         }
-        final UUID generatedKey = messageService.log(message1);
         System.out.println("=============");
+        final Collection<Message> filteredMessages = messageService.findBySeverity(SeverityLevel.MINOR);
+        for (Message current: filteredMessages) {
+            System.out.println(current);
+        }
+        System.out.println("=============");
+        final UUID generatedKey = messageService.log(message1);
         System.out.println(messageService.findByPrimaryKey(generatedKey));
+
     }
 }

@@ -178,6 +178,11 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
         return messageRepository.findAll();
     }
 
+    @Override
+    public Collection<Message> findBySeverity(SeverityLevel by) {
+        return messageRepository.findBySeverity(by);
+    }
+
     /**
      * метод используется для сравнения имеющейся строки
      * с элементами массива строк

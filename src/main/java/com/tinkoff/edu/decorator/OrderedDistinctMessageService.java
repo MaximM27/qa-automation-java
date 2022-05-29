@@ -7,6 +7,7 @@ import com.tinkoff.edu.printer.ConsolePrinter;
 import com.tinkoff.edu.repository.HashMapMessageRepository;
 import com.tinkoff.edu.repository.MessageRepository;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -170,6 +171,11 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
     @Override
     public Message findByPrimaryKey(UUID key) {
         return messageRepository.findByPrimaryKey(key);
+    }
+
+    @Override
+    public Collection<Message> findAll() {
+        return messageRepository.findAll();
     }
 
     /**

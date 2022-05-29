@@ -3,6 +3,8 @@ import com.tinkoff.edu.decorator.*;
 import com.tinkoff.edu.domain.Message;
 import com.tinkoff.edu.printer.ConsolePrinter;
 
+import java.util.UUID;
+
 
 class Application {
     public static void main(String[] args) {
@@ -13,6 +15,7 @@ class Application {
         Message message5 = new Message(SeverityLevel.MINOR, "Good Luck");
         MessageService messageService = new OrderedDistinctMessageService(new Decorator(), new ConsolePrinter());
         messageService.log(message1, message2, message3, message4, message5);
-        System.out.println();
+        final UUID generatedKey = messageService.log(message1);
+        System.out.println(messageService.findByPrimaryKey(generatedKey));
     }
 }

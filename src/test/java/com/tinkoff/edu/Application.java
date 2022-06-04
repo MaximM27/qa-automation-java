@@ -3,6 +3,9 @@ import com.tinkoff.edu.decorator.*;
 import com.tinkoff.edu.domain.Message;
 import com.tinkoff.edu.printer.ConsolePrinter;
 
+import java.util.Collection;
+import java.util.UUID;
+
 
 class Application {
     public static void main(String[] args) {
@@ -13,6 +16,18 @@ class Application {
         Message message5 = new Message(SeverityLevel.MINOR, "Good Luck");
         MessageService messageService = new OrderedDistinctMessageService(new Decorator(), new ConsolePrinter());
         messageService.log(message1, message2, message3, message4, message5);
-        System.out.println();
+        final Collection<Message> allMessages = messageService.findAll();
+        for (Message current: allMessages) {
+            System.out.println(current);
+        }
+        System.out.println("=============");
+        final Collection<Message> filteredMessages = messageService.findBySeverity(SeverityLevel.MINOR);
+        for (Message current: filteredMessages) {
+            System.out.println(current);
+        }
+        System.out.println("=============");
+        final UUID generatedKey = messageService.log(message1);
+        System.out.println(messageService.findByPrimaryKey(generatedKey));
+
     }
 }

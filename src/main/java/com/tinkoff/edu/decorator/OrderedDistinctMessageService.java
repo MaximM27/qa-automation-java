@@ -7,7 +7,9 @@ import com.tinkoff.edu.printer.ConsolePrinter;
 import com.tinkoff.edu.repository.HashMapMessageRepository;
 import com.tinkoff.edu.repository.MessageRepository;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Класс содержит методы для получения итоговой строки
@@ -27,6 +29,21 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
     public OrderedDistinctMessageService(Decorator decorator, ConsolePrinter printer) {
         this.decorator = decorator;
         this.printer = printer;
+    }
+
+    /**
+     * метод используется для сохранения создания primary key и сохранения
+     * объекта Message в HashMap
+     * @param message объект типа Message, который требуется сохранить в HashMap
+     * @return primaryKey типа UUID
+     */
+    public UUID log(Message message){
+        try {
+            super.isArgsValid(message);
+        } catch (IllegalArgumentException e){
+            throw new LogException("invalid argument message", e);
+        }
+        return messageRepository.create(message);
     }
 
     /**
@@ -50,6 +67,7 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
             }
             messageRepository.create(currentMessage);
         }
+       // return messageRepository.;
     }
 
     /**
@@ -63,7 +81,7 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
         } catch (IllegalArgumentException e){
             throw new LogException("invalid argument message", e);
         }
-        messageRepository.create(message);
+         messageRepository.create(message);
         switch (order) {
             case ASC: {
                 for (Message current: messages) {
@@ -148,6 +166,21 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
                 break;
             }
         }
+    }
+
+    @Override
+    public Message findByPrimaryKey(UUID key) {
+        return messageRepository.findByPrimaryKey(key);
+    }
+
+    @Override
+    public Collection<Message> findAll() {
+        return messageRepository.findAll();
+    }
+
+    @Override
+    public Collection<Message> findBySeverity(SeverityLevel by) {
+        return messageRepository.findBySeverity(by);
     }
 
     /**

@@ -33,7 +33,7 @@ public class HashMapMessageRepository implements MessageRepository {
     @Override
     public Collection<Message> findBySeverity(SeverityLevel by) {
         return messages.values().stream()
-                .filter(message -> message.getLevel() == by)
+                .filter(message -> message.getLevel().equals(by))
                 .collect(Collectors.toList());
     }
 }

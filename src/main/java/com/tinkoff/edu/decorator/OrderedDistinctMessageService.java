@@ -67,7 +67,6 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
             }
             messageRepository.create(currentMessage);
         }
-       // return messageRepository.;
     }
 
     /**

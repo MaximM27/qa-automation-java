@@ -3,83 +3,134 @@ import com.tinkoff.edu.decorator.*;
 import com.tinkoff.edu.domain.Message;
 import com.tinkoff.edu.printer.ConsolePrinter;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Collection;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static com.tinkoff.edu.decorator.SeverityLevel.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
 class ApplicationTest {
+    private MessageService messageService;
+    private Message message1;
+    private Message message2;
+    private Message message3;
 
-    @Test
-    @DisplayName("Проверить добавление объекта Message в HashSet")
-    public void ShouldSaveAllMessagesTest() {
-        Message message1 = new Message(SeverityLevel.MINOR, "Hello, world!");
+    @BeforeEach
+    public void init() {
+        messageService = new OrderedDistinctMessageService(new Decorator(), new ConsolePrinter());
+        message1 = new Message(MINOR, "Hello, world!");
+        message2 = new Message(MINOR, "Hi!");
+        message3 = new Message(MAJOR, "Bye!");
+    }
 
-        MessageService messageService = new OrderedDistinctMessageService(new Decorator(), new ConsolePrinter());
-        messageService.log(message1);
+    @Nested
+    @DisplayName("Тесты добавления объекта message в HashMap")
+    class addMessageToHashMapTest {
 
-        final Collection<Message> allMessages = messageService.findAll();
+        @BeforeEach
+        public void initData() {
+            UUID primaryKey1 = messageService.log(message1);
+            UUID primaryKey2 = messageService.log(message2);
+            UUID primaryKey3 = messageService.log(message3);
+            message1.setId(primaryKey1);
+            message2.setId(primaryKey2);
+            message3.setId(primaryKey3);
+        }
 
-        for (Message current: allMessages) {
-            assertAll(
-                () -> assertEquals(current.getBody(), message1.getBody()),
-                () -> assertEquals(current.getLevel(), message1.getLevel())
-            );
+        @Test
+        @DisplayName("Проверить добавление объектов message в HashMap")
+        public void shouldSaveAllMessagesTest() {
+            final Collection<Message> allMessages = messageService.findAll();
+            assertThat(allMessages, hasSize(3));
+            assertThat(allMessages, containsInAnyOrder(message1, message2, message3));
+        }
+
+        @Test
+        @DisplayName("Повторно добавить объект Message в HashSet")
+        public void tryRepeatSaveMessageTest() {
+            messageService.log(message1);
+            final Collection<Message> allMessages = messageService.findAll();
+            assertThat(allMessages, hasSize(4));
         }
     }
 
-    @Test
-    @DisplayName("Проверить фильтр по параметру Severity")
-    public void ShouldReturnFilteredMessagesBySeverityTest() {
-        Message message1 = new Message(SeverityLevel.MINOR, "Hello, world!");
-        Message message2 = new Message(SeverityLevel.REGULAR, "Hi!");
-        Message message3 = new Message(SeverityLevel.MAJOR, "Bye!");
+    @Nested
+    @DisplayName("Тесты по проверке фильтров")
+    class checkFiltersTest {
 
-        MessageService messageService = new OrderedDistinctMessageService(new Decorator(), new ConsolePrinter());
-        messageService.log(message1, message2, message3);
+        private UUID primaryKey1;
+        private UUID primaryKey2;
+        private UUID primaryKey3;
+        private UUID randomPrimaryKey;
 
-        final Collection<Message> filteredMessages = messageService.findBySeverity(SeverityLevel.MINOR);
+        @BeforeEach
+        public void initData() {
+            primaryKey1 = messageService.log(message1);
+            primaryKey2 = messageService.log(message2);
+            primaryKey3 = messageService.log(message3);
+            randomPrimaryKey = UUID.randomUUID();
+        }
 
-        for (Message current : filteredMessages) {
-            assertAll(
-                () -> assertEquals(current.getBody(), message1.getBody()),
-                () -> assertEquals(current.getLevel(), message1.getLevel())
-            );
+        @Test
+        @DisplayName("Проверить фильтр по параметру Severity")
+        public void shouldReturnFilteredMessagesBySeverityTest() {
+
+            final Collection<Message> filteredMessages = getMessages(messageService, MINOR);
+            assertThat(filteredMessages, contains(message1));
+        }
+
+        @Test
+        @DisplayName("Проверить фильтр по параметру Severity при отсутствии сообщения в нужным Severity в мапе")
+        public void shouldNotReturnFilteredMessagesBySeverityTest() {
+
+            final Collection<Message> filteredMessages = getMessages(messageService, REGULAR);
+            assertThat(filteredMessages, hasSize(0));
+        }
+
+        @Test
+        @DisplayName("Проверить фильтр по generatedKey при передаче существующего в HashMap значения")
+        public void shouldReturnFilteredMessagesByGeneratedKeyTest() {
+
+            assertEquals(messageService.findByPrimaryKey(primaryKey1), message1);
+        }
+
+        @Test
+        @DisplayName("Проверить фильтр по generatedKey при передаче несуществующего в HashMap значения")
+        public void shouldNotReturnFilteredMessagesByGeneratedKeyTest() {
+
+            assertNull(messageService.findByPrimaryKey(randomPrimaryKey));
         }
     }
 
-    @Test
-    @DisplayName("Проверить фильтр по generatedKey")
-    public void ShouldReturnFilteredMessagesByGeneratedKeyTest() {
-        Message message1 = new Message(SeverityLevel.MINOR, "Hello, world!");
-        MessageService messageService = new OrderedDistinctMessageService(new Decorator(), new ConsolePrinter());
+    @Nested
+    @DisplayName("Тесты по проверке исключений")
+    class throwExceptionTest {
 
-        final UUID generatedKey = messageService.log(message1);
+        @Test
+        @DisplayName("Проверить выбрасывание исключения, если message is null")
+        public void shouldReturnExceptionWhenMessageIsNullTest() {
+            Message message1 = new Message(MINOR, "");
+            MessageService messageService = new OrderedDistinctMessageService(new Decorator(), new ConsolePrinter());
+            assertThrows(LogException.class, () -> messageService.log(message1));
+        }
 
-        assertEquals(messageService.findByPrimaryKey(generatedKey), message1);
+        @Test
+        @DisplayName("Проверить выбрасывание исключения, если message is empty")
+        public void shouldReturnExceptionIsEmptyTest() {
+            Message message1 = new Message(MINOR, null);
+            MessageService messageService = new OrderedDistinctMessageService(new Decorator(), new ConsolePrinter());
+
+            assertThrows(LogException.class, () -> messageService.log(message1));
+        }
     }
-
-    @Test
-    @DisplayName("Проверить выбрасывание исключения, если message is null")
-    public void ShouldReturnExceptionWhenMessageIsNullTest() {
-        Message message1 = new Message(SeverityLevel.MINOR, null);
-        MessageService messageService = new OrderedDistinctMessageService(new Decorator(), new ConsolePrinter());
-
-        assertThrows(LogException.class, () -> messageService.log(message1));
-    }
-
-    @Test
-    @DisplayName("Проверить выбрасывание исключения, если message is empty")
-    public void ShouldReturnExceptionIsEmptyTest() {
-        Message message1 = new Message(SeverityLevel.MINOR, "");
-        MessageService messageService = new OrderedDistinctMessageService(new Decorator(), new ConsolePrinter());
-
-        assertThrows(LogException.class, () -> messageService.log(message1));
+    private Collection<Message> getMessages(MessageService messageService, SeverityLevel level) {
+        final Collection<Message> filteredMessages = messageService.findBySeverity(level);
+        return filteredMessages;
     }
 }

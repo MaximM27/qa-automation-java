@@ -82,7 +82,8 @@ class ApplicationTest {
         public void shouldReturnFilteredMessagesBySeverityTest() {
 
             final Collection<Message> filteredMessages = getMessages(messageService, MINOR);
-            assertThat(filteredMessages, contains(message1));
+            assertThat(filteredMessages, hasSize(2));
+            assertThat(filteredMessages, containsInAnyOrder(message1, message2));
         }
 
         @Test

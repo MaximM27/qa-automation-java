@@ -1,8 +1,8 @@
 package com.tinkoff.edu;
 
-import com.tinkoff.edu.decorator.Doubling;
-import com.tinkoff.edu.decorator.MessageOrder;
-import com.tinkoff.edu.decorator.SeverityLevel;
+import com.tinkoff.edu.dictionary.Doubling;
+import com.tinkoff.edu.dictionary.MessageOrder;
+import com.tinkoff.edu.dictionary.SeverityLevel;
 import com.tinkoff.edu.domain.Message;
 
 import java.util.Collection;

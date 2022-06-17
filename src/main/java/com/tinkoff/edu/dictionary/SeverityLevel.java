@@ -1,4 +1,4 @@
-package com.tinkoff.edu.decorator;
+package com.tinkoff.edu.dictionary;
 
 public enum SeverityLevel {
     MINOR, REGULAR, MAJOR

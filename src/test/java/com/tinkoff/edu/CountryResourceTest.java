@@ -5,9 +5,6 @@ import io.restassured.authentication.PreemptiveBasicAuthScheme;
 import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Random;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -34,20 +31,20 @@ public class CountryResourceTest {
     @DisplayName("Тесты метода GET /api/countries/{id}")
     class getCountryByIdTest {
 
-        private String countryId;
+        private Integer countryId;
         private String countryName;
 
         @Test
         @DisplayName("Передать существующий в базе id страны")
         public void tryToGetExistingIdTest() {
-            countryId = get("" + baseUrl + "").then().extract().response().path("id[0]").toString();
+            countryId = Integer.valueOf(get("" + baseUrl + "").then().extract().response().path("id[0]").toString());
             countryName = get("" + baseUrl + "").then().extract().response().path("countryName[0]").toString();
             when()
-                    .get(""+baseUrl+""+Integer.valueOf(countryId)+"")
+                    .get(""+baseUrl+""+countryId+"")
             .then()
                     .statusCode(200)
                     .body(
-                            "id", is(Integer.valueOf(countryId)),
+                            "id", is(countryId),
                             "countryName", is(countryName)
                     );
         }
@@ -81,25 +78,38 @@ public class CountryResourceTest {
     class putCountryByIdTest {
 
         private String newName;
-        private String countryId;
-        private String nextCountryId;
+        private Integer nextCountryId;
+        private Integer countryId;
 
         @Test
         @DisplayName("Передать существующий в базе id и валидное имя, несуществующее в базе имя")
         public void putCountryWithExistingIdAndValidNotExistingNameTest() {
-            newName = getRandomString(2);
-            countryId = get("" + baseUrl + "").then().extract().response().path("id[0]").toString();
+            newName = "aq";
+            var response = given()
+                    .contentType("application/json")
+                    .body("{\n" +
+                            "  \"countryName\": \"" + newName + "\"\n" +
+                            "}")
+                    .when()
+                    .post("" + baseUrl + "")
+                    .then()
+                    .statusCode(201)
+                    .body("id", not(empty()),
+                            "countryName", is(newName));
+
+            countryId = response.extract().response().path("id");
+
             given()
                     .contentType("application/json")
                     .body("{\n" +
-                            "  \"id\": "+Integer.valueOf(countryId)+",\n" +
+                            "  \"id\": "+countryId+",\n" +
                             "  \"countryName\": \""+newName+"\"\n" +
                             "}")
             .when()
-                    .put(""+baseUrl+""+Integer.valueOf(countryId)+"")
+                    .put(""+baseUrl+""+countryId+"")
             .then()
                     .statusCode(200)
-                    .body("id", is(Integer.valueOf(countryId)),
+                    .body("id", is(countryId),
                             "countryName", is(newName)
                     );
         }
@@ -107,8 +117,8 @@ public class CountryResourceTest {
         @Test
         @DisplayName("Передать несуществующий id")
         public void putCountryWithNotExistingIdTest() {
-            newName = getRandomString(2);
-            countryId = get("" + baseUrl + "").then().extract().response().path("id[0]").toString();
+            newName = "aq";
+            countryId = Integer.valueOf(get("" + baseUrl + "").then().extract().response().path("id[0]").toString());
             given()
                     .contentType("application/json")
                     .body("{\n" +
@@ -116,7 +126,7 @@ public class CountryResourceTest {
                             "  \"countryName\": \""+newName+"\"\n" +
                             "}")
                     .when()
-                    .put(""+baseUrl+""+Integer.valueOf(countryId)+"")
+                    .put(""+baseUrl+""+countryId+"")
                     .then()
                     .statusCode(400)
                     .body("title", is("Invalid ID")
@@ -126,8 +136,8 @@ public class CountryResourceTest {
         @Test
         @DisplayName("Передать невалидный id")
         public void putCountryWithInvalidIdTest() {
-            newName = getRandomString(2);
-            countryId = get("" + baseUrl + "").then().extract().response().path("id[0]").toString();
+            newName = "aq";
+            countryId = Integer.valueOf(get("" + baseUrl + "").then().extract().response().path("id[0]").toString());
             given()
                     .contentType("application/json")
                     .body("{\n" +
@@ -135,7 +145,7 @@ public class CountryResourceTest {
                             "  \"countryName\": \""+newName+"\"\n" +
                             "}")
                     .when()
-                    .put(""+baseUrl+""+Integer.valueOf(countryId)+"")
+                    .put(""+baseUrl+""+countryId+"")
                     .then()
                     .statusCode(400)
                     .body("title", is("Bad Request")
@@ -145,8 +155,8 @@ public class CountryResourceTest {
         @Test
         @DisplayName("Передать невалидный id")
         public void putCountryWithNullIdTest() {
-            newName = getRandomString(2);
-            countryId = get("" + baseUrl + "").then().extract().response().path("id[0]").toString();
+            newName = "aq";
+            countryId = Integer.valueOf(get("" + baseUrl + "").then().extract().response().path("id[0]").toString());
             given()
                     .contentType("application/json")
                     .body("{\n" +
@@ -154,7 +164,7 @@ public class CountryResourceTest {
                             "  \"countryName\": \""+newName+"\"\n" +
                             "}")
                     .when()
-                    .put(""+baseUrl+""+Integer.valueOf(countryId)+"")
+                    .put(""+baseUrl+""+countryId+"")
                     .then()
                     .statusCode(400)
                     .body("title", is("Invalid id")
@@ -164,15 +174,15 @@ public class CountryResourceTest {
         @Test
         @DisplayName("Не передавать id")
         public void putCountryWithoutIdTest() {
-            newName = getRandomString(2);
-            countryId = get("" + baseUrl + "").then().extract().response().path("id[0]").toString();
+            newName = "aq";
+            countryId = Integer.valueOf(get("" + baseUrl + "").then().extract().response().path("id[0]").toString());
             given()
                     .contentType("application/json")
                     .body("{\n" +
                             "  \"countryName\": \""+newName+"\"\n" +
                             "}")
                     .when()
-                    .put(""+baseUrl+""+Integer.valueOf(countryId)+"")
+                    .put(""+baseUrl+""+countryId+"")
                     .then()
                     .statusCode(400)
                     .body("title", is("Invalid id")
@@ -182,17 +192,17 @@ public class CountryResourceTest {
         @Test
         @DisplayName("Передать в payload id, несовпадающий с id в url запроса")
         public void putCountryWithNotMatchedIdTest() {
-            newName = getRandomString(2);
-            countryId = get("" + baseUrl + "").then().extract().response().path("id[0]").toString();
-            nextCountryId = get("" + baseUrl + "").then().extract().response().path("id[1]").toString();
+            newName = "aq";
+            countryId = Integer.valueOf(get("" + baseUrl + "").then().extract().response().path("id[0]").toString());
+            nextCountryId = Integer.valueOf(get("" + baseUrl + "").then().extract().response().path("id[1]").toString());
             given()
                     .contentType("application/json")
                     .body("{\n" +
-                            "  \"id\": "+Integer.valueOf(nextCountryId)+",\n" +
+                            "  \"id\": "+nextCountryId+",\n" +
                             "  \"countryName\": \""+newName+"\"\n" +
                             "}")
                     .when()
-                    .put(""+baseUrl+""+Integer.valueOf(countryId)+"")
+                    .put(""+baseUrl+""+countryId+"")
                     .then()
                     .statusCode(400)
                     .body("title", is("Invalid ID")
@@ -202,16 +212,16 @@ public class CountryResourceTest {
         @Test
         @DisplayName("Передать невалидное имя страны")
         public void putCountryWithInvalidNameTest() {
-            newName = getRandomString(3);
-            countryId = get("" + baseUrl + "").then().extract().response().path("id[0]").toString();
+            newName = "abc";
+            countryId = Integer.valueOf(get("" + baseUrl + "").then().extract().response().path("id[0]").toString());
             given()
                     .contentType("application/json")
                     .body("{\n" +
-                            "  \"id\": "+Integer.valueOf(countryId)+",\n" +
+                            "  \"id\": "+countryId+",\n" +
                             "  \"countryName\": \""+newName+"\"\n" +
                             "}")
                     .when()
-                    .put(""+baseUrl+""+Integer.valueOf(countryId)+"")
+                    .put(""+baseUrl+""+countryId+"")
                     .then()
                     .statusCode(400)
                     .body("fieldErrors[0].field", is("countryName"),
@@ -221,17 +231,16 @@ public class CountryResourceTest {
 
         @Test
         @DisplayName("Передать null в имени страны")
-        public void puCountryWithNullNameTest() {
-            newName = getRandomString(3);
-            countryId = get("" + baseUrl + "").then().extract().response().path("id[0]").toString();
+        public void putCountryWithNullNameTest() {
+            countryId = Integer.valueOf(get("" + baseUrl + "").then().extract().response().path("id[0]").toString());
             given()
                     .contentType("application/json")
                     .body("{\n" +
-                            "  \"id\": "+Integer.valueOf(countryId)+",\n" +
+                            "  \"id\": "+countryId+",\n" +
                             "  \"countryName\": null\n" +
                             "}")
                     .when()
-                    .put(""+baseUrl+""+Integer.valueOf(countryId)+"")
+                    .put(""+baseUrl+""+countryId+"")
                     .then()
                     .statusCode(400)
                     .body("fieldErrors[0].field", is("countryName"),
@@ -242,14 +251,14 @@ public class CountryResourceTest {
         @Test
         @DisplayName("Не передавать имя страны")
         public void putCountryWithoutNameTest() {
-            countryId = get("" + baseUrl + "").then().extract().response().path("id[0]").toString();
+            countryId = Integer.valueOf(get("" + baseUrl + "").then().extract().response().path("id[0]").toString());
             given()
                     .contentType("application/json")
                     .body("{\n" +
-                            "  \"id\": "+Integer.valueOf(countryId)+"\n" +
+                            "  \"id\": "+countryId+"\n" +
                             "}")
                     .when()
-                    .put(""+baseUrl+""+Integer.valueOf(countryId)+"")
+                    .put(""+baseUrl+""+countryId+"")
                     .then()
                     .statusCode(400)
                     .body("fieldErrors[0].field", is("countryName"),
@@ -261,15 +270,15 @@ public class CountryResourceTest {
         @DisplayName("Передать существующее в базе имя страны")
         public void putCountryWithExistingNameTest() {
             String existingName = get(""+baseUrl+"").then().extract().response().path("countryName[0]").toString();
-            nextCountryId = get("" + baseUrl + "").then().extract().response().path("id[1]").toString();
+            nextCountryId = Integer.valueOf(get("" + baseUrl + "").then().extract().response().path("id[1]").toString());
             given()
                     .contentType("application/json")
                     .body("{\n" +
-                            "  \"id\": "+Integer.valueOf(nextCountryId)+",\n" +
+                            "  \"id\": "+nextCountryId+",\n" +
                             "  \"countryName\": \""+existingName+"\"\n" +
                             "}")
                     .when()
-                    .put(""+baseUrl+""+Integer.valueOf(nextCountryId)+"")
+                    .put(""+baseUrl+""+nextCountryId+"")
                     .then()
                     .statusCode(500)
                     .body("title", is("Internal Server Error")
@@ -281,14 +290,12 @@ public class CountryResourceTest {
     @DisplayName("Тесты метода DELETE /api/countries/{id}")
     class deleteCountryByIdTest {
 
-        private String deletedId;
-
         @Test
         @DisplayName("Передать существующий id")
         public void deleteExistingIdTest() {
-            deletedId = get("" + baseUrl + "").then().extract().response().path("id[0]").toString();
+            int deletedId = Integer.parseInt(get("" + baseUrl + "").then().extract().response().path("id[0]").toString());
             when()
-                    .delete(""+baseUrl+""+Integer.valueOf(deletedId)+"")
+                    .delete(""+baseUrl+""+ deletedId +"")
             .then()
                     .statusCode(204);
         }
@@ -321,13 +328,24 @@ public class CountryResourceTest {
     class createNewCountryTest {
 
         private String newName;
+        private Integer countryId = null;
+
+        @AfterEach
+        public void cleanTestData() {
+            if (countryId != null) {
+                when()
+                    .delete(""+baseUrl+""+countryId+"")
+                    .then()
+                    .statusCode(204);
+            }
+        }
 
         @Test
         @DisplayName("Создать страну с валидным, несуществующим в базе названием")
         public void createCountryWithNotExistingName() {
-            newName = getRandomString(2);
+            newName = "aq";
 
-            given()
+            var response = given()
                     .contentType("application/json")
                     .body("{\n" +
                             "  \"countryName\": \"" + newName + "\"\n" +
@@ -339,6 +357,7 @@ public class CountryResourceTest {
                     .body("id", not(empty()),
                             "countryName", is(newName));
 
+            countryId = response.extract().response().path("id");
         }
 
         @Test
@@ -362,7 +381,7 @@ public class CountryResourceTest {
         @Test
         @DisplayName("Создать страну с невалидным названием")
         public void createCountryWithInvalidName() {
-            newName = getRandomString(3);
+            newName = "abc";
 
             given()
                     .contentType("application/json")
@@ -377,16 +396,5 @@ public class CountryResourceTest {
                             "fieldErrors[0].message", is("size must be between 2 and 2")
                     );
         }
-    }
-
-    public static String getRandomString(int length){
-        String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        Random random=new Random();
-        StringBuffer sb=new StringBuffer();
-        for(int i=0;i<length;i++){
-            int number=random.nextInt(62);
-            sb.append(str.charAt(number));
-        }
-        return sb.toString();
     }
 }

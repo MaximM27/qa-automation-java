@@ -1,5 +1,6 @@
 package com.tinkoff.edu;
 import com.tinkoff.edu.decorator.*;
+import com.tinkoff.edu.dictionary.SeverityLevel;
 import com.tinkoff.edu.domain.Message;
 import com.tinkoff.edu.printer.ConsolePrinter;
 
@@ -8,7 +9,7 @@ import org.junit.jupiter.api.*;
 import java.util.Collection;
 import java.util.UUID;
 
-import static com.tinkoff.edu.decorator.SeverityLevel.*;
+import static com.tinkoff.edu.dictionary.SeverityLevel.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,5 +1,7 @@
 package com.tinkoff.edu.decorator;
 
+import com.tinkoff.edu.dictionary.SeverityLevel;
+
 /**
  * Класс содержит методы для декорирования сообщений
  * уровнем важности

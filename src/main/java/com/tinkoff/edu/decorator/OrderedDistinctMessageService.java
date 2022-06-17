@@ -2,6 +2,9 @@ package com.tinkoff.edu.decorator;
 
 import com.tinkoff.edu.MessageDecorator;
 import com.tinkoff.edu.Printer;
+import com.tinkoff.edu.dictionary.Doubling;
+import com.tinkoff.edu.dictionary.MessageOrder;
+import com.tinkoff.edu.dictionary.SeverityLevel;
 import com.tinkoff.edu.domain.Message;
 import com.tinkoff.edu.printer.ConsolePrinter;
 import com.tinkoff.edu.repository.HashMapMessageRepository;
@@ -67,7 +70,6 @@ public class OrderedDistinctMessageService extends ValidatedService implements c
             }
             messageRepository.create(currentMessage);
         }
-       // return messageRepository.;
     }
 
     /**

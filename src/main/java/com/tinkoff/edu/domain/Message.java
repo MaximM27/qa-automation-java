@@ -1,6 +1,6 @@
 package com.tinkoff.edu.domain;
 
-import com.tinkoff.edu.decorator.SeverityLevel;
+import com.tinkoff.edu.dictionary.SeverityLevel;
 
 import java.util.Objects;
 import java.util.UUID;
